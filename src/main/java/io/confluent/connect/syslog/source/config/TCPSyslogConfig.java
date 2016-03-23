@@ -1,69 +1,96 @@
 package io.confluent.connect.syslog.source.config;
 
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.common.config.ConfigDef.Type;
 import org.apache.kafka.common.config.ConfigDef.Importance;
-import org.graylog2.syslog4j.server.impl.net.AbstractNetSyslogServerConfig;
-import org.graylog2.syslog4j.server.impl.net.tcp.TCPNetSyslogServerConfig;
+import org.apache.kafka.common.config.ConfigDef.Type;
+import org.graylog2.syslog4j.SyslogConstants;
+import org.graylog2.syslog4j.server.impl.net.tcp.TCPNetSyslogServer;
 import org.graylog2.syslog4j.server.impl.net.tcp.TCPNetSyslogServerConfigIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 
-public class TCPSyslogConfig extends BaseSyslogConfig<TCPNetSyslogServerConfig> {
+public class TCPSyslogConfig extends BaseSyslogConfig implements TCPNetSyslogServerConfigIF {
+  private static final Logger log = LoggerFactory.getLogger(TCPSyslogConfig.class);
 
-  public static String TIMEOUT_CONFIG = "syslog.timeout";
-  private static String TIMEOUT_DOC = "timeout";
+  public static final String TIMEOUT_CONFIG = "syslog.timeout";
+  private static final String TIMEOUT_DOC = "Number of milliseconds before a timing out the connection.";
 
-  public static String BACKLOG_CONFIG = "syslog.backlog";
-  private static String BACKLOG_DOC = "backlog";
+  public static final String BACKLOG_CONFIG = "syslog.backlog";
+  private static final String BACKLOG_DOC = "Number of connections to allow in backlog.";
 
-  public static String MAX_ACTIVE_SOCKETS_CONFIG = "syslog.max.active.sockets";
-  private static String MAX_ACTIVE_SOCKETS_DOC = "Maximum active sockets";
+  public static final String MAX_ACTIVE_SOCKETS_CONFIG = "syslog.max.active.sockets";
+  private static final String MAX_ACTIVE_SOCKETS_DOC = "Maximum active sockets";
 
-  public static String MAX_ACTIVE_SOCKETS_BEHAVIOR_CONFIG = "syslog.max.active.sockets.behavior";
-  private static String MAX_ACTIVE_SOCKETS_BEHAVIOR_DOC = "Maximum active sockets";
+  public static final String MAX_ACTIVE_SOCKETS_BEHAVIOR_CONFIG = "syslog.max.active.sockets.behavior";
+  private static final String MAX_ACTIVE_SOCKETS_BEHAVIOR_DOC = "Maximum active sockets";
 
-  private static ConfigDef getConfig() {
+  protected static ConfigDef getConfig() {
     return baseConfig()
         .define(TIMEOUT_CONFIG, Type.INT, 0, Importance.LOW, TIMEOUT_DOC)
-        .define(BACKLOG_CONFIG, Type.INT, 0, Importance.LOW, BACKLOG_DOC)
+        .define(BACKLOG_CONFIG, Type.INT, SyslogConstants.SERVER_SOCKET_BACKLOG_DEFAULT, ConfigDef.Range.atLeast(1), Importance.LOW, BACKLOG_DOC)
         .define(MAX_ACTIVE_SOCKETS_CONFIG, Type.INT, TCPNetSyslogServerConfigIF.TCP_MAX_ACTIVE_SOCKETS_DEFAULT, Importance.LOW, MAX_ACTIVE_SOCKETS_DOC)
         .define(MAX_ACTIVE_SOCKETS_BEHAVIOR_CONFIG, Type.INT, (int)TCPNetSyslogServerConfigIF.MAX_ACTIVE_SOCKETS_BEHAVIOR_BLOCK, Importance.LOW, MAX_ACTIVE_SOCKETS_BEHAVIOR_DOC)
         ;
+  }
+
+  public TCPSyslogConfig(ConfigDef definition, Map<String, String> originals) {
+    super(definition, originals);
   }
 
   public TCPSyslogConfig(Map<String, String> originals) {
     super(getConfig(), originals);
   }
 
+  @Override
   public int getTimeout() {
     return this.getInt(TIMEOUT_CONFIG);
   }
 
+  @Override
+  public void setTimeout(int i) {
+    log.warn("Setting {} to {}. Should not happen", TIMEOUT_CONFIG, i);
+
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public int getBacklog() {
     return this.getInt(BACKLOG_CONFIG);
   }
 
+  @Override
+  public void setBacklog(int i) {
+    log.warn("Setting {} to {}. Should not happen", BACKLOG_CONFIG, i);
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public int getMaxActiveSockets() {
     return this.getInt(MAX_ACTIVE_SOCKETS_CONFIG);
   }
 
+  @Override
+  public void setMaxActiveSockets(int i) {
+    log.warn("Setting {} to {}. Should not happen", MAX_ACTIVE_SOCKETS_CONFIG, i);
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public byte getMaxActiveSocketsBehavior() {
-    //TODO: Fix this later.
-    return TCPNetSyslogServerConfigIF.MAX_ACTIVE_SOCKETS_BEHAVIOR_BLOCK;
+    return (byte) this.get(MAX_ACTIVE_SOCKETS_BEHAVIOR_CONFIG);
   }
 
   @Override
-  protected TCPNetSyslogServerConfig createSyslog() {
-    return new TCPNetSyslogServerConfig();
+  public void setMaxActiveSocketsBehavior(byte b) {
+    log.warn("Setting {} to {}. Should not happen", MAX_ACTIVE_SOCKETS_BEHAVIOR_CONFIG, b);
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  protected void applySettings(TCPNetSyslogServerConfig config) {
-    super.applySettings(config);
-    config.setBacklog(this.getBacklog());
-    config.setMaxActiveSockets(this.getMaxActiveSockets());
-    config.setMaxActiveSocketsBehavior(this.getMaxActiveSocketsBehavior());
+  public Class getSyslogServerClass() {
+    return TCPNetSyslogServer.class;
   }
 }

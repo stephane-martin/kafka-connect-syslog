@@ -24,6 +24,8 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
   public static final String DATE="date";
   public static final String LEVEL="level";
   public static final String MESSAGE="message";
+  public static final String CHARSET="charset";
+  public static final String REMOTE_ADDRESS="remote_address";
 
   final Schema keySchema;
   final Schema valueSchema;
@@ -35,7 +37,7 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
     this.topic = topic;
 
     this.keySchema = SchemaBuilder.struct().name("SyslogKey")
-        .field(HOST, Schema.STRING_SCHEMA)
+        .field(REMOTE_ADDRESS, Schema.STRING_SCHEMA)
         .build();
 
     this.valueSchema = SchemaBuilder.struct().name("SyslogValue")
@@ -44,17 +46,20 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
         .field(HOST, Schema.STRING_SCHEMA)
         .field(LEVEL, Schema.INT32_SCHEMA)
         .field(MESSAGE, Schema.STRING_SCHEMA)
+        .field(CHARSET, Schema.STRING_SCHEMA)
+        .field(REMOTE_ADDRESS, Schema.STRING_SCHEMA)
         .build();
   }
-
 
   @Override
   public void event(SyslogServerIF syslogServerIF, SocketAddress socketAddress, SyslogServerEventIF event) {
 
     Map<String, String> partition = Collections.singletonMap(HOST, event.getHost());
 
+    String remoteAddress = socketAddress.toString();
+
     Struct keyStruct = new Struct(this.keySchema)
-        .put(HOST, event.getHost());
+        .put(REMOTE_ADDRESS, remoteAddress);
     
     Struct valueStruct = new Struct(this.valueSchema)
         .put(DATE, event.getDate())
@@ -62,7 +67,10 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
         .put(HOST, event.getHost())
         .put(LEVEL, event.getLevel())
         .put(MESSAGE, event.getMessage())
+        .put(CHARSET, event.getCharSet())
+        .put(REMOTE_ADDRESS, remoteAddress)
         ;
+
 
     SourceRecord sourceRecord = new SourceRecord(
         partition,
@@ -79,7 +87,9 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
 
   @Override
   public void exception(SyslogServerIF syslogServerIF, SocketAddress socketAddress, Exception e) {
-
+    if(log.isErrorEnabled()){
+      log.error("Exception throw " + socketAddress, e);
+    }
   }
 
   @Override

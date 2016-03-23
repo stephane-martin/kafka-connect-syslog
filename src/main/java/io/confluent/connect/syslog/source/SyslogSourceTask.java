@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 
 public abstract class SyslogSourceTask<T extends BaseSyslogConfig> extends SourceTask{
@@ -20,6 +22,8 @@ public abstract class SyslogSourceTask<T extends BaseSyslogConfig> extends Sourc
   ConnectSyslogEventHandler syslogEventHandler;
   SyslogServerIF syslogServer;
   int batchSize;
+  int backoffMS;
+  T config;
 
   @Override
   public String version() {
@@ -30,31 +34,37 @@ public abstract class SyslogSourceTask<T extends BaseSyslogConfig> extends Sourc
 
   @Override
   public void start(Map<String, String> props) {
-    T config = createConfig(props);
-
-    this.batchSize = config.getBatchSize();
+    this.config = createConfig(props);
+    this.backoffMS = this.config.getBackoff();
+    this.batchSize = this.config.getBatchSize();
     this.recordQueue = new LinkedBlockingQueue<>(config.getMessageBufferSize());
     this.records = new ArrayList<>(this.batchSize);
     this.syslogEventHandler = new ConnectSyslogEventHandler(this.recordQueue, config.getTopic());
-    AbstractNetSyslogServerConfig syslogServerConfig = config.getSyslogServerConfig();
-    syslogServerConfig.addEventHandler(this.syslogEventHandler);
-    this.syslogServer = SyslogServer.createThreadedInstance("asdfa", syslogServerConfig);
+    this.config.addEventHandler(this.syslogEventHandler);
+    this.syslogServer = SyslogServer.createThreadedInstance("asdfa", config);
   }
+
+  CountDownLatch stopLatch = new CountDownLatch(1);
 
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
     this.records.clear();
 
-    if(0 == this.recordQueue.drainTo(this.records, this.batchSize)) {
-      Thread.sleep(250);
+    this.recordQueue.drainTo(this.records, this.batchSize);
+
+    if(!this.records.isEmpty()){
       return this.records;
     }
 
+    if(this.stopLatch.await(this.backoffMS, TimeUnit.MILLISECONDS)){
+
+    }
     return this.records;
   }
 
   @Override
   public void stop() {
+    this.stopLatch.countDown();
     this.syslogServer.shutdown();
   }
 }

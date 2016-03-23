@@ -38,19 +38,19 @@ public class TCPSyslogConfigTest {
 
 
 
-  @Test
-  public void getSyslogServerConfig(){
-    AbstractNetSyslogServerConfig actual = this.config.getSyslogServerConfig();
-    Assert.assertNotNull("actual should not be null.", actual);
-    Assert.assertThat(actual, instanceOf(TCPNetSyslogServerConfig.class));
-    TCPNetSyslogServerConfig actualConfig = (TCPNetSyslogServerConfig) actual;
-    Assert.assertEquals("Port does not match.", (int)PORT, actualConfig.getPort());
-    Assert.assertEquals("HOST does not match.", HOST, actualConfig.getHost());
-
-    Assert.assertEquals("Backlog does not match.", (int)BACKLOG, actualConfig.getBacklog());
-    Assert.assertEquals("MaxActiveSockets does not match.", (int)MAXACTIVESOCKETS, actualConfig.getMaxActiveSockets());
-    Assert.assertEquals("MaxActiveSocketsBehavior does not match.", (Byte)MAXACTIVESOCKETSBEHAVIOR, (Byte)actualConfig.getMaxActiveSocketsBehavior());
-  }
+//  @Test
+//  public void getSyslogServerConfig(){
+//
+//    Assert.assertNotNull("actual should not be null.", actual);
+//    Assert.assertThat(actual, instanceOf(TCPNetSyslogServerConfig.class));
+//    TCPNetSyslogServerConfig actualConfig = (TCPNetSyslogServerConfig) actual;
+//    Assert.assertEquals("Port does not match.", (int)PORT, actualConfig.getPort());
+//    Assert.assertEquals("HOST does not match.", HOST, actualConfig.getHost());
+//
+//    Assert.assertEquals("Backlog does not match.", (int)BACKLOG, actualConfig.getBacklog());
+//    Assert.assertEquals("MaxActiveSockets does not match.", (int)MAXACTIVESOCKETS, actualConfig.getMaxActiveSockets());
+//    Assert.assertEquals("MaxActiveSocketsBehavior does not match.", (Byte)MAXACTIVESOCKETSBEHAVIOR, (Byte)actualConfig.getMaxActiveSocketsBehavior());
+//  }
 
 
 
