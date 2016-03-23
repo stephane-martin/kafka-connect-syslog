@@ -1,5 +1,7 @@
 Initial implementation of a syslog source for Kafka Connect.
 
+Unfortunately this requires the following [pull request](https://github.com/Graylog2/syslog4j-graylog2/pull/9) from [syslog4j-graylog2](https://github.com/Graylog2/syslog4j-graylog2). You will need to pull do this pull request and `mvn clean install` before building this project.  
+
 # UDP Syslog Source
 
 ## Minimal Example
@@ -34,6 +36,10 @@ tasks.max=2
 connector.class=io.confluent.connect.syslog.source.SSLTCPSyslogSourceConnector
 kafka.topic=syslog-tcp
 syslog.port=5514
+syslog.keystore=/etc/security/keystore.tks
+syslog.keystore.password=90e4ngghadfghi
+syslog.truststore=/etc/security/truststore.tks
+syslog.truststore.password=oznsdfgnsdfg
 ```
 
 # Development 

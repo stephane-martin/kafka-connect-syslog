@@ -16,7 +16,6 @@
 package io.confluent.connect.syslog.source.config;
 
 import org.apache.kafka.common.config.ConfigDef;
-import org.graylog2.syslog4j.server.impl.net.tcp.TCPNetSyslogServerConfigIF;
 import org.graylog2.syslog4j.server.impl.net.tcp.ssl.SSLTCPNetSyslogServer;
 import org.graylog2.syslog4j.server.impl.net.tcp.ssl.SSLTCPNetSyslogServerConfigIF;
 import org.slf4j.Logger;
@@ -24,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class SSLTCPSyslogConfig extends TCPSyslogConfig implements SSLTCPNetSyslogServerConfigIF {
-  private static final Logger log = LoggerFactory.getLogger(SSLTCPSyslogConfig.class);
+public class SSLTCPSyslogSourceConfig extends TCPSyslogSourceConfig implements SSLTCPNetSyslogServerConfigIF {
+  private static final Logger log = LoggerFactory.getLogger(SSLTCPSyslogSourceConfig.class);
 
   public static final String KEYSTORE_CONFIG="syslog.keystore";
   public static final String KEYSTORE_DOC="Path to the keystore containing the ssl certificate for this host.";
@@ -42,7 +41,7 @@ public class SSLTCPSyslogConfig extends TCPSyslogConfig implements SSLTCPNetSysl
 
 
   protected static ConfigDef getConfig() {
-    return TCPSyslogConfig.getConfig()
+    return TCPSyslogSourceConfig.getConfig()
         .define(KEYSTORE_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, KEYSTORE_DOC)
         .define(KEYSTORE_PASSWORD_CONFIG, ConfigDef.Type.PASSWORD, ConfigDef.Importance.HIGH, KEYSTORE_PASSWORD_DOC)
         .define(TRUSTSTORE_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TRUSTSTORE_DOC)
@@ -50,7 +49,7 @@ public class SSLTCPSyslogConfig extends TCPSyslogConfig implements SSLTCPNetSysl
         ;
   }
 
-  public SSLTCPSyslogConfig(Map<String, String> originals) {
+  public SSLTCPSyslogSourceConfig(Map<String, String> originals) {
     super(getConfig(), originals);
   }
 

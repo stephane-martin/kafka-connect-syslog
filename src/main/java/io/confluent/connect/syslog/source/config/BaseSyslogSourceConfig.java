@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseSyslogConfig extends AbstractConfig implements SyslogServerConfigIF {
-  private static final Logger log = LoggerFactory.getLogger(BaseSyslogConfig.class);
+public abstract class BaseSyslogSourceConfig extends AbstractConfig implements SyslogServerConfigIF {
+  private static final Logger log = LoggerFactory.getLogger(BaseSyslogSourceConfig.class);
 
   public static final String TOPIC_CONFIG="kafka.topic";
   private static final String TOPIC_DOC="Kafka topic to write syslog data to.";
@@ -62,7 +62,7 @@ public abstract class BaseSyslogConfig extends AbstractConfig implements SyslogS
 
   final List<SyslogServerEventHandlerIF> eventhandlers;
 
-  public BaseSyslogConfig(ConfigDef definition, Map<String, String> originals) {
+  public BaseSyslogSourceConfig(ConfigDef definition, Map<String, String> originals) {
     super(definition, originals);
 
     this.eventhandlers = new ArrayList<>();

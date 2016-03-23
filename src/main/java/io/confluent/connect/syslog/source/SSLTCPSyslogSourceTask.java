@@ -15,15 +15,14 @@
  */
 package io.confluent.connect.syslog.source;
 
-import io.confluent.connect.syslog.source.config.SSLTCPSyslogConfig;
-import io.confluent.connect.syslog.source.config.TCPSyslogConfig;
+import io.confluent.connect.syslog.source.config.SSLTCPSyslogSourceConfig;
 
 import java.util.Map;
 
 
-public class SSLTCPSyslogSourceTask extends SyslogSourceTask<SSLTCPSyslogConfig> {
+public class SSLTCPSyslogSourceTask extends SyslogSourceTask<SSLTCPSyslogSourceConfig> {
   @Override
-  SSLTCPSyslogConfig createConfig(Map<String, String> props) {
-    return new SSLTCPSyslogConfig(props);
+  SSLTCPSyslogSourceConfig createConfig(Map<String, String> props) {
+    return new SSLTCPSyslogSourceConfig(props);
   }
 }

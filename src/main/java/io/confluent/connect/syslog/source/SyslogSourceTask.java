@@ -15,12 +15,11 @@
  */
 package io.confluent.connect.syslog.source;
 
-import io.confluent.connect.syslog.source.config.BaseSyslogConfig;
+import io.confluent.connect.syslog.source.config.BaseSyslogSourceConfig;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.graylog2.syslog4j.server.SyslogServer;
 import org.graylog2.syslog4j.server.SyslogServerIF;
-import org.graylog2.syslog4j.server.impl.net.AbstractNetSyslogServerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 
-public abstract class SyslogSourceTask<T extends BaseSyslogConfig> extends SourceTask{
+public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends SourceTask{
   BlockingQueue<SourceRecord> recordQueue;
   List<SourceRecord> records;
   ConnectSyslogEventHandler syslogEventHandler;

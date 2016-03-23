@@ -15,14 +15,14 @@
  */
 package io.confluent.connect.syslog.source;
 
-import io.confluent.connect.syslog.source.config.TCPSyslogConfig;
+import io.confluent.connect.syslog.source.config.TCPSyslogSourceConfig;
 
 import java.util.Map;
 
 
-public class TCPSyslogSourceTask extends SyslogSourceTask<TCPSyslogConfig> {
+public class TCPSyslogSourceTask extends SyslogSourceTask<TCPSyslogSourceConfig> {
   @Override
-  TCPSyslogConfig createConfig(Map<String, String> props) {
-    return new TCPSyslogConfig(props);
+  TCPSyslogSourceConfig createConfig(Map<String, String> props) {
+    return new TCPSyslogSourceConfig(props);
   }
 }

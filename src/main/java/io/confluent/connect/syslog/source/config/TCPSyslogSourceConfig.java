@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 
-public class TCPSyslogConfig extends BaseSyslogConfig implements TCPNetSyslogServerConfigIF {
-  private static final Logger log = LoggerFactory.getLogger(TCPSyslogConfig.class);
+public class TCPSyslogSourceConfig extends BaseSyslogSourceConfig implements TCPNetSyslogServerConfigIF {
+  private static final Logger log = LoggerFactory.getLogger(TCPSyslogSourceConfig.class);
 
   public static final String TIMEOUT_CONFIG = "syslog.timeout";
   private static final String TIMEOUT_DOC = "Number of milliseconds before a timing out the connection.";
@@ -51,11 +51,11 @@ public class TCPSyslogConfig extends BaseSyslogConfig implements TCPNetSyslogSer
         ;
   }
 
-  public TCPSyslogConfig(ConfigDef definition, Map<String, String> originals) {
+  public TCPSyslogSourceConfig(ConfigDef definition, Map<String, String> originals) {
     super(definition, originals);
   }
 
-  public TCPSyslogConfig(Map<String, String> originals) {
+  public TCPSyslogSourceConfig(Map<String, String> originals) {
     super(getConfig(), originals);
   }
 
