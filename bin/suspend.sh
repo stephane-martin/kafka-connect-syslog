@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Copyright (C) 2016 Jeremy Custenborder (jcustenborder@gmail.com)
 #
@@ -14,9 +15,9 @@
 # limitations under the License.
 #
 
-name=udpsyslog
-tasks.max=2
-connector.class=io.confluent.kafka.connect.syslog.source.UDPSyslogSourceConnector
-kafka.topic=syslog-udp
-syslog.port=5514
-syslog.reverse.dns.remote.ip=true
+mvn clean package
+
+export CLASSPATH="$(find `pwd`/target/kafka-connect-salesforce-1.0-SNAPSHOT-package/share/java/ -type f -name '*.jar' | tr '\n' ':')"
+export KAFKA_JMX_OPTS='-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005'
+
+$CONFLUENT_HOME/bin/connect-standalone connect/connect-avro-docker.properties config/salesforce.properties

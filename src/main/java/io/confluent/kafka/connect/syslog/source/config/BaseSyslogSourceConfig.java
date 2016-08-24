@@ -1,19 +1,19 @@
 /**
  * Copyright (C) 2016 Jeremy Custenborder (jcustenborder@gmail.com)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.confluent.connect.syslog.source.config;
+package io.confluent.kafka.connect.syslog.source.config;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
@@ -29,36 +29,27 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseSyslogSourceConfig extends AbstractConfig implements SyslogServerConfigIF {
+  public static final String TOPIC_CONFIG = "kafka.topic";
+  public static final String HOST_CONFIG = "syslog.host";
+  public static final String PORT_CONFIG = "syslog.port";
+  public static final String CHARSET_CONFIG = "syslog.charset";
+  public static final String SHUTDOWN_WAIT_CONFIG = "syslog.shutdown.wait";
+  public static final String STRUCTURED_DATA_CONFIG = "syslog.structured.data";
+  public static final String BACKOFF_CONFIG = "backoff.ms";
+  public static final String REVERSE_DNS_IP_CONF = "syslog.reverse.dns.remote.ip";
+  public static final String REVERSE_DNS_CACHE_TTL_CONF = "syslog.reverse.dns.cache.ms";
   private static final Logger log = LoggerFactory.getLogger(BaseSyslogSourceConfig.class);
-
-  public static final String TOPIC_CONFIG="kafka.topic";
-  private static final String TOPIC_DOC="Kafka topic to write syslog data to.";
-
-  public static final String HOST_CONFIG="syslog.host";
-  private static final String HOST_DOC="Hostname to listen on.";
-
-  public static final String PORT_CONFIG="syslog.port";
-  private static final String PORT_DOC="Port to listen on.";
-
-  public static final String CHARSET_CONFIG="syslog.charset";
-  private static final String CHARSET_DOC="Character set for syslog messages.";
-  private static final String CHARSET_DEFAULT="UTF-8";
-
-  public static final String SHUTDOWN_WAIT_CONFIG="syslog.shutdown.wait";
-  private static final String SHUTDOWN_WAIT_DOC="The amount of time in milliseconds to wait for messages when shutting down the server.";
-  private static final long SHUTDOWN_WAIT_DEFAULT= SyslogConstants.SERVER_SHUTDOWN_WAIT_DEFAULT;
-
-  public static final String STRUCTURED_DATA_CONFIG="syslog.structured.data";
-  private static final String STRUCTURED_DATA_DOC="Flag to determine if structured data should be used.";
-
-  public static final String MESSAGE_BUFFER_SIZE_CONFIG="message.buffer.size";
-  private static final String MESSAGE_BUFFER_SIZE_DOC="Maximum number of documents to buffer in memory before blocking.";
-
-  public static final String BATCH_SIZE_CONFIG="batch.size";
-  private static final String BATCH_SIZE_DOC="Number of documents to batch to kafka in a single request.";
-
-  public static final String BACKOFF_CONFIG="backoff.ms";
-  private static final String BACKOFF_DOC="Number of milliseconds to sleep when no data is returned.";
+  private static final String TOPIC_DOC = "Kafka topic to write syslog data to.";
+  private static final String HOST_DOC = "Hostname to listen on.";
+  private static final String PORT_DOC = "Port to listen on.";
+  private static final String CHARSET_DOC = "Character set for syslog messages.";
+  private static final String CHARSET_DEFAULT = "UTF-8";
+  private static final String SHUTDOWN_WAIT_DOC = "The amount of time in milliseconds to wait for messages when shutting down the server.";
+  private static final long SHUTDOWN_WAIT_DEFAULT = SyslogConstants.SERVER_SHUTDOWN_WAIT_DEFAULT;
+  private static final String STRUCTURED_DATA_DOC = "Flag to determine if structured data should be used.";
+  private static final String BACKOFF_DOC = "Number of milliseconds to sleep when no data is returned.";
+  private static final String REVERSE_DNS_IP_DOC = "Flag to determine if the ip address of the remote sender should be resolved. If set to false the hostname value will be null.";
+  private static final String REVERSE_DNS_CACHE_TTL_DOC = "The amount of time to cache the reverse lookup values from DNS.";
 
   final List<SyslogServerEventHandlerIF> eventhandlers;
 
@@ -68,24 +59,21 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
     this.eventhandlers = new ArrayList<>();
   }
 
-  protected static ConfigDef baseConfig() {
+  protected static ConfigDef config() {
     return new ConfigDef()
         .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
         .define(HOST_CONFIG, ConfigDef.Type.STRING, null, ConfigDef.Importance.HIGH, HOST_DOC)
         .define(PORT_CONFIG, ConfigDef.Type.INT, ConfigDef.Importance.HIGH, PORT_DOC)
-        .define(MESSAGE_BUFFER_SIZE_CONFIG, ConfigDef.Type.INT, 8192, ConfigDef.Importance.MEDIUM, MESSAGE_BUFFER_SIZE_DOC)
-        .define(BATCH_SIZE_CONFIG, ConfigDef.Type.INT, 1024, ConfigDef.Importance.MEDIUM, BATCH_SIZE_DOC)
         .define(STRUCTURED_DATA_CONFIG, ConfigDef.Type.BOOLEAN, false, ConfigDef.Importance.LOW, STRUCTURED_DATA_DOC)
         .define(BACKOFF_CONFIG, ConfigDef.Type.INT, 500, ConfigDef.Range.atLeast(50), ConfigDef.Importance.LOW, BACKOFF_DOC)
         .define(CHARSET_CONFIG, ConfigDef.Type.STRING, CHARSET_DEFAULT, ConfigDef.Importance.LOW, CHARSET_DOC)
         .define(SHUTDOWN_WAIT_CONFIG, ConfigDef.Type.LONG, SHUTDOWN_WAIT_DEFAULT, ConfigDef.Importance.LOW, SHUTDOWN_WAIT_DOC)
-        ;
+        .define(REVERSE_DNS_IP_CONF, ConfigDef.Type.BOOLEAN, false, ConfigDef.Importance.LOW, REVERSE_DNS_IP_DOC)
+        .define(REVERSE_DNS_CACHE_TTL_CONF, ConfigDef.Type.LONG, 60000, ConfigDef.Importance.LOW, REVERSE_DNS_CACHE_TTL_DOC);
   }
 
-
-
   @Override
-  public String getHost(){
+  public String getHost() {
     return this.getString(HOST_CONFIG);
   }
 
@@ -186,16 +174,8 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
     throw new UnsupportedOperationException();
   }
 
-  public String getTopic() {
+  public String topic() {
     return this.getString(TOPIC_CONFIG);
-  }
-
-  public int getBatchSize() {
-    return this.getInt(BATCH_SIZE_CONFIG);
-  }
-
-  public int getMessageBufferSize() {
-    return this.getInt(MESSAGE_BUFFER_SIZE_CONFIG);
   }
 
   public int getBackoff() {
@@ -212,4 +192,13 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
     log.warn("Setting {} to {}. Should not happen", CHARSET_CONFIG, s);
     throw new UnsupportedOperationException();
   }
+
+  public boolean reverseDnsIP() {
+    return this.getBoolean(REVERSE_DNS_IP_CONF);
+  }
+
+  public long reverseDnsCacheTtl() {
+    return this.getLong(REVERSE_DNS_CACHE_TTL_CONF);
+  }
+
 }

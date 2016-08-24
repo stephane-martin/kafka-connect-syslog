@@ -1,32 +1,28 @@
 /**
  * Copyright (C) 2016 Jeremy Custenborder (jcustenborder@gmail.com)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.confluent.connect.syslog.source.config;
+package io.confluent.kafka.connect.syslog.source;
 
-import org.graylog2.syslog4j.server.impl.net.udp.UDPNetSyslogServer;
+import io.confluent.kafka.connect.syslog.source.config.SSLTCPSyslogSourceConfig;
 
 import java.util.Map;
 
 
-public class UDPSyslogSourceConfig extends BaseSyslogSourceConfig {
-  public UDPSyslogSourceConfig(Map<String, String> originals) {
-    super(baseConfig(), originals);
-  }
-
+public class SSLTCPSyslogSourceTask extends SyslogSourceTask<SSLTCPSyslogSourceConfig> {
   @Override
-  public Class getSyslogServerClass() {
-    return UDPNetSyslogServer.class;
+  SSLTCPSyslogSourceConfig createConfig(Map<String, String> props) {
+    return new SSLTCPSyslogSourceConfig(props);
   }
 }
