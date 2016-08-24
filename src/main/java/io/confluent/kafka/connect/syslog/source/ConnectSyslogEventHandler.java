@@ -106,9 +106,13 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
           log.warn("Exception while doing a reverse lookup of {}", socketAddress, ex);
         }
       }
-
     } else {
-      valueStruct.put(HOSTNAME, null);
+      if(socketAddress instanceof InetSocketAddress){
+        InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
+        valueStruct.put(HOSTNAME, inetSocketAddress.getAddress().getHostAddress());
+      } else {
+        valueStruct.put(HOSTNAME, socketAddress.toString());
+      }
     }
 
     SourceRecord sourceRecord = new SourceRecord(
