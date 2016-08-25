@@ -107,7 +107,7 @@ class ConnectSyslogEventHandler implements SyslogServerSessionlessEventHandlerIF
         }
       }
     } else {
-      if(socketAddress instanceof InetSocketAddress){
+      if (socketAddress instanceof InetSocketAddress) {
         InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
         valueStruct.put(HOSTNAME, inetSocketAddress.getAddress().getHostAddress());
       } else {
