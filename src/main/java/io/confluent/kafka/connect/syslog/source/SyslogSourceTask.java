@@ -20,6 +20,8 @@ import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.graylog2.syslog4j.server.SyslogServer;
 import org.graylog2.syslog4j.server.SyslogServerIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 
 
 public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends SourceTask {
+  private static final Logger log = LoggerFactory.getLogger(SyslogSourceTask.class);
   ConcurrentLinkedDeque<SourceRecord> messageQueue;
   ConnectSyslogEventHandler syslogEventHandler;
   SyslogServerIF syslogServer;
@@ -49,6 +52,11 @@ public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends
     this.messageQueue = new ConcurrentLinkedDeque<>();
     this.syslogEventHandler = new ConnectSyslogEventHandler(this.messageQueue, this.config);
     this.config.addEventHandler(this.syslogEventHandler);
+
+    if (log.isInfoEnabled()) {
+      log.info("Starting syslog on port {}", this.config.getPort());
+    }
+
     this.syslogServer = SyslogServer.createThreadedInstance("Syslog Server", config);
   }
 
