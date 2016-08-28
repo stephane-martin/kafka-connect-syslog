@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <prerequisites>
-        <maven>3.0.4</maven>
+        <maven>3.3.0</maven>
     </prerequisites>
 
     <groupId>io.confluent.kafka.connect</groupId>
