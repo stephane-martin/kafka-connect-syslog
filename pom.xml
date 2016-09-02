@@ -81,6 +81,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.confluent.kafka</groupId>
+            <artifactId>connect-utils</artifactId>
+            <version>[0.1.14,0.1.100)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graylog2</groupId>
+            <artifactId>syslog4j</artifactId>
+            <version>${syslog4j.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>connect-api</artifactId>
             <version>${kafka.version}</version>
@@ -91,16 +101,6 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.graylog2</groupId>
-            <artifactId>syslog4j</artifactId>
-            <version>${syslog4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.confluent.kafka</groupId>
-            <artifactId>connect-utils</artifactId>
-            <version>0.1.7</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

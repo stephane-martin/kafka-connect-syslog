@@ -7,6 +7,7 @@ A namespace was added to the connect schema.
 | syslog.port                  | Port to listen on.                                                                                                            | int     |         |              | high       |
 | syslog.host                  | Hostname to listen on.                                                                                                        | string  | null    |              | high       |
 | backoff.ms                   | Number of milliseconds to sleep when no data is returned.                                                                     | int     | 500     | [50,...]     | low        |
+| batch.size                   | The number of records to pull off of the queue at once.                                                                       | int     | 5000    |              | low        |
 | syslog.charset               | Character set for syslog messages.                                                                                            | string  | UTF-8   |              | low        |
 | syslog.reverse.dns.cache.ms  | The amount of time to cache the reverse lookup values from DNS.                                                               | long    | 60000   |              | low        |
 | syslog.reverse.dns.remote.ip | Flag to determine if the ip address of the remote sender should be resolved. If set to false the hostname value will be null. | boolean | false   |              | low        |
@@ -31,6 +32,7 @@ syslog.port=5514
 | syslog.port                        | Port to listen on.                                                                                                            | int     |         |              | high       |
 | syslog.host                        | Hostname to listen on.                                                                                                        | string  | null    |              | high       |
 | backoff.ms                         | Number of milliseconds to sleep when no data is returned.                                                                     | int     | 500     | [50,...]     | low        |
+| batch.size                         | The number of records to pull off of the queue at once.                                                                       | int     | 5000    |              | low        |
 | syslog.backlog                     | Number of connections to allow in backlog.                                                                                    | int     | 50      | [1,...]      | low        |
 | syslog.charset                     | Character set for syslog messages.                                                                                            | string  | UTF-8   |              | low        |
 | syslog.max.active.sockets          | Maximum active sockets                                                                                                        | int     | 0       |              | low        |
@@ -63,6 +65,7 @@ syslog.port=5514
 | syslog.truststore.password         | Password for the truststore.                                                                                                  | password |         |              | high       |
 | syslog.host                        | Hostname to listen on.                                                                                                        | string   | null    |              | high       |
 | backoff.ms                         | Number of milliseconds to sleep when no data is returned.                                                                     | int      | 500     | [50,...]     | low        |
+| batch.size                         | The number of records to pull off of the queue at once.                                                                       | int      | 5000    |              | low        |
 | syslog.backlog                     | Number of connections to allow in backlog.                                                                                    | int      | 50      | [1,...]      | low        |
 | syslog.charset                     | Character set for syslog messages.                                                                                            | string   | UTF-8   |              | low        |
 | syslog.max.active.sockets          | Maximum active sockets                                                                                                        | int      | 0       |              | low        |
