@@ -16,6 +16,7 @@
 package io.confluent.kafka.connect.syslog.source;
 
 import io.confluent.kafka.connect.syslog.source.config.BaseSyslogSourceConfig;
+import io.confluent.kafka.connect.utils.data.SourceRecordConcurrentLinkedDeque;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.graylog2.syslog4j.server.SyslogServer;
@@ -26,13 +27,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CountDownLatch;
 
 
 public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends SourceTask {
   private static final Logger log = LoggerFactory.getLogger(SyslogSourceTask.class);
-  ConcurrentLinkedDeque<SourceRecord> messageQueue;
+  SourceRecordConcurrentLinkedDeque messageQueue;
   ConnectSyslogEventHandler syslogEventHandler;
   SyslogServerIF syslogServer;
   int backoffMS;
@@ -49,7 +49,7 @@ public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends
   @Override
   public void start(Map<String, String> props) {
     this.config = createConfig(props);
-    this.messageQueue = new ConcurrentLinkedDeque<>();
+    this.messageQueue = new SourceRecordConcurrentLinkedDeque(this.config.batchSize(), this.config.backoffMS());
     this.syslogEventHandler = new ConnectSyslogEventHandler(this.messageQueue, this.config);
     this.config.addEventHandler(this.syslogEventHandler);
 
@@ -62,26 +62,10 @@ public abstract class SyslogSourceTask<T extends BaseSyslogSourceConfig> extends
 
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
-    List<SourceRecord> records = new ArrayList<>(256);
+    List<SourceRecord> records = new ArrayList<>(this.config.batchSize());
+    while (!this.messageQueue.drain(records)) {
 
-    while (records.isEmpty()) {
-      int size = messageQueue.size();
-
-      for (int i = 0; i < size; i++) {
-        SourceRecord record = this.messageQueue.poll();
-
-        if (null == record) {
-          break;
-        }
-
-        records.add(record);
-      }
-
-      if (records.isEmpty()) {
-        Thread.sleep(100);
-      }
     }
-
     return records;
   }
 

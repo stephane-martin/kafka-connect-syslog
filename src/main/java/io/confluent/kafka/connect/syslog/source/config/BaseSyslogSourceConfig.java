@@ -38,6 +38,7 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
   public static final String BACKOFF_CONFIG = "backoff.ms";
   public static final String REVERSE_DNS_IP_CONF = "syslog.reverse.dns.remote.ip";
   public static final String REVERSE_DNS_CACHE_TTL_CONF = "syslog.reverse.dns.cache.ms";
+  public static final String BATCH_SIZE_CONF = "batch.size";
   private static final Logger log = LoggerFactory.getLogger(BaseSyslogSourceConfig.class);
   private static final String TOPIC_DOC = "Kafka topic to write syslog data to.";
   private static final String HOST_DOC = "Hostname to listen on.";
@@ -50,6 +51,7 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
   private static final String BACKOFF_DOC = "Number of milliseconds to sleep when no data is returned.";
   private static final String REVERSE_DNS_IP_DOC = "Flag to determine if the ip address of the remote sender should be resolved. If set to false the hostname value will be null.";
   private static final String REVERSE_DNS_CACHE_TTL_DOC = "The amount of time to cache the reverse lookup values from DNS.";
+  private static final String BATCH_SIZE_DOC = "The number of records to pull off of the queue at once.";
 
   final List<SyslogServerEventHandlerIF> eventhandlers;
 
@@ -65,11 +67,12 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
         .define(HOST_CONFIG, ConfigDef.Type.STRING, null, ConfigDef.Importance.HIGH, HOST_DOC)
         .define(PORT_CONFIG, ConfigDef.Type.INT, ConfigDef.Importance.HIGH, PORT_DOC)
         .define(STRUCTURED_DATA_CONFIG, ConfigDef.Type.BOOLEAN, false, ConfigDef.Importance.LOW, STRUCTURED_DATA_DOC)
-        .define(BACKOFF_CONFIG, ConfigDef.Type.INT, 500, ConfigDef.Range.atLeast(50), ConfigDef.Importance.LOW, BACKOFF_DOC)
+        .define(BACKOFF_CONFIG, ConfigDef.Type.INT, 100, ConfigDef.Range.atLeast(50), ConfigDef.Importance.LOW, BACKOFF_DOC)
         .define(CHARSET_CONFIG, ConfigDef.Type.STRING, CHARSET_DEFAULT, ConfigDef.Importance.LOW, CHARSET_DOC)
         .define(SHUTDOWN_WAIT_CONFIG, ConfigDef.Type.LONG, SHUTDOWN_WAIT_DEFAULT, ConfigDef.Importance.LOW, SHUTDOWN_WAIT_DOC)
         .define(REVERSE_DNS_IP_CONF, ConfigDef.Type.BOOLEAN, false, ConfigDef.Importance.LOW, REVERSE_DNS_IP_DOC)
-        .define(REVERSE_DNS_CACHE_TTL_CONF, ConfigDef.Type.LONG, 60000, ConfigDef.Importance.LOW, REVERSE_DNS_CACHE_TTL_DOC);
+        .define(REVERSE_DNS_CACHE_TTL_CONF, ConfigDef.Type.LONG, 60000, ConfigDef.Importance.LOW, REVERSE_DNS_CACHE_TTL_DOC)
+        .define(BATCH_SIZE_CONF, ConfigDef.Type.INT, 5000, ConfigDef.Importance.LOW, BATCH_SIZE_DOC);
   }
 
   @Override
@@ -199,6 +202,14 @@ public abstract class BaseSyslogSourceConfig extends AbstractConfig implements S
 
   public long reverseDnsCacheTtl() {
     return this.getLong(REVERSE_DNS_CACHE_TTL_CONF);
+  }
+
+  public int batchSize() {
+    return this.getInt(BATCH_SIZE_CONF);
+  }
+
+  public int backoffMS() {
+    return this.getInt(BACKOFF_CONFIG);
   }
 
 }
