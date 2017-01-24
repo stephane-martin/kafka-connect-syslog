@@ -25,7 +25,7 @@ The 0.2 release breaks compatibility with the existing schema.
 ```
 name=udpsyslog
 tasks.max=2
-connector.class=io.confluent.kafka.connect.syslog.source.UDPSyslogSourceConnector
+connector.class=com.github.jcustenborder.kafka.connect.syslog.UDPSyslogSourceConnector
 kafka.topic=syslog-udp
 syslog.port=5514
 ```
@@ -54,7 +54,7 @@ syslog.port=5514
 ```
 name=tcpsyslog
 tasks.max=2
-connector.class=io.confluent.kafka.connect.syslog.source.TCPSyslogSourceConnector
+connector.class=com.github.jcustenborder.kafka.connect.syslog.TCPSyslogSourceConnector
 kafka.topic=syslog-tcp
 syslog.port=5514
 ```
@@ -87,7 +87,7 @@ syslog.port=5514
 ```
 name=tcpsyslog
 tasks.max=2
-connector.class=io.confluent.kafka.connect.syslog.source.SSLTCPSyslogSourceConnector
+connector.class=com.github.jcustenborder.kafka.connect.syslog.SSLTCPSyslogSourceConnector
 kafka.topic=syslog-tcp
 syslog.port=5514
 syslog.keystore=/etc/security/keystore.tks
