@@ -1,5 +1,11 @@
-This connector provides support for receiving messages via syslog. The 0.0.2 version did break compatibility with existing schemas. 
-A namespace was added to the connect schema.
+## Introduction
+
+This connector provides support for receiving messages via syslog.
+
+## Important
+
+The 0.2 release breaks compatibility with the existing schema. 
+
   
 | Name                         | Description                                                                                                                   | Type    | Default | Valid Values | Importance |
 |------------------------------|-------------------------------------------------------------------------------------------------------------------------------|---------|---------|--------------|------------|
