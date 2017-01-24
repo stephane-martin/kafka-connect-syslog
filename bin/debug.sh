@@ -15,8 +15,13 @@
 # limitations under the License.
 #
 
+
+: ${SUSPEND:='n'}
+
+set -e
+
 mvn clean package
+export KAFKA_JMX_OPTS="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=${SUSPEND},address=5005"
+export CLASSPATH="$(find target/kafka-connect-target/share/java -type f -name '*.jar' | tr '\n' ':')"
 
-export CLASSPATH="$(find target/ -type f -name '*.jar'| grep '\-package' | tr '\n' ':')"
-
-$CONFLUENT_HOME/bin/connect-standalone connect/connect-avro-docker.properties config/udpsyslog.properties
+$CONFLUENT_HOME/bin/connect-standalone config/connect-avro-docker.properties config/udpsyslog.properties
